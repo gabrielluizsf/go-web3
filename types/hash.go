@@ -11,7 +11,7 @@ const HASH_LENGHT = 32
 type Hash [HASH_LENGHT]uint8
 
 func (h Hash) Slice() []byte {
-	slice := make([]byte, 32)
+	slice := make([]byte, HASH_LENGHT)
 	for i := 0; i < HASH_LENGHT; i++ {
 		slice[i] = h[i]
 	}
