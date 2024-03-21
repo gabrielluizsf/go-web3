@@ -9,7 +9,7 @@ import (
 type Transaction struct {
 	Data []byte
 
-	PublicKey crypto.PublicKey
+	From crypto.PublicKey
 	Signature *crypto.Signature
 }
 
@@ -24,7 +24,7 @@ func (t *Transaction) Sign(privKey crypto.PrivateKey) error {
 	if err != nil {
 		return err
 	}
-	t.PublicKey = privKey.PublicKey()
+	t.From = privKey.PublicKey()
 	t.Signature = sign
 	return nil
 }
@@ -33,7 +33,7 @@ func (t *Transaction) Verify() error {
 	if t.Signature == nil {
 		return errors.New("transaction has no signature")
 	}
-	if !t.Signature.Verify(t.PublicKey, t.Data) {
+	if !t.Signature.Verify(t.From, t.Data) {
 		return errors.New("invalid transaction signature")
 	}
 	return nil
