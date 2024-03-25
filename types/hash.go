@@ -1,7 +1,6 @@
 package types
 
 import (
-	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 )
@@ -9,18 +8,6 @@ import (
 const HASH_LENGHT = 32
 
 type Hash [HASH_LENGHT]uint8
-
-func (h Hash) Slice() []byte {
-	slice := make([]byte, HASH_LENGHT)
-	for i := 0; i < HASH_LENGHT; i++ {
-		slice[i] = h[i]
-	}
-	return slice
-}
-
-func (h Hash) String() string {
-	return hex.EncodeToString(h.Slice())
-}
 
 func (h Hash) IsZero() bool {
 	for i := 0; i < HASH_LENGHT; i++ {
@@ -31,26 +18,28 @@ func (h Hash) IsZero() bool {
 	return true
 }
 
+func (h Hash) ToSlice() []byte {
+	b := make([]byte, HASH_LENGHT)
+	for i := 0; i < HASH_LENGHT; i++ {
+		b[i] = h[i]
+	}
+	return b
+}
+
+func (h Hash) String() string {
+	return hex.EncodeToString(h.ToSlice())
+}
+
 func HashFromBytes(b []byte) Hash {
-	bytesLenght := len(b)
-	if bytesLenght != HASH_LENGHT {
-		msg := fmt.Sprintf("Given bytes with lenght %d should be %d", bytesLenght, HASH_LENGHT)
+	if len(b) != HASH_LENGHT {
+		msg := fmt.Sprintf("given bytes with length %d should be 32", len(b))
 		panic(msg)
 	}
 
-	var value Hash
+	var value [HASH_LENGHT]uint8
 	for i := 0; i < HASH_LENGHT; i++ {
 		value[i] = b[i]
 	}
-	return value
-}
 
-func RandomBytes(size int) []byte {
-	token := make([]byte, size)
-	rand.Read(token)
-	return token
-}
-
-func RandomHash() Hash {
-	return HashFromBytes(RandomBytes(HASH_LENGHT))
+	return Hash(value)
 }
