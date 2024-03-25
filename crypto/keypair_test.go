@@ -7,27 +7,27 @@ import (
 )
 
 func TestKeypairSignVerifySuccess(t *testing.T) {
-	privateKey := GeneratePrivateKey()
-	publicKey := privateKey.PublicKey()
+	privKey := GeneratePrivateKey()
+	publicKey := privKey.PublicKey()
+	msg := []byte("hello world")
 
-	msg := []byte("Hello")
-	sign, err := privateKey.Sign(msg)
+	sig, err := privKey.Sign(msg)
 	assert.Nil(t, err)
-	assert.NotNil(t, sign)
-	assert.True(t, sign.Verify(publicKey, msg))
-	assert.NotNil(t, privateKey)
+
+	assert.True(t, sig.Verify(publicKey, msg))
 }
 
 func TestKeypairSignVerifyFail(t *testing.T) {
-	privateKey := GeneratePrivateKey()
-	publicKey := privateKey.PublicKey()
-	otherPrivateKey := GeneratePrivateKey()
-	otherPublicKey := otherPrivateKey.PublicKey()
-	msg := []byte("Hello")
-	sign, err := privateKey.Sign(msg)
+	privKey := GeneratePrivateKey()
+	publicKey := privKey.PublicKey()
+	msg := []byte("hello world")
+
+	sig, err := privKey.Sign(msg)
 	assert.Nil(t, err)
-	assert.NotNil(t, sign)
-	assert.False(t, sign.Verify(otherPublicKey, msg))
-	assert.NotNil(t, privateKey)
-	assert.False(t, sign.Verify(publicKey,[]byte("Hello World")))
+
+	otherPrivKey := GeneratePrivateKey()
+	otherPublicKey := otherPrivKey.PublicKey()
+
+	assert.False(t, sig.Verify(otherPublicKey, msg))
+	assert.False(t, sig.Verify(publicKey, []byte("xxxxxx")))
 }
