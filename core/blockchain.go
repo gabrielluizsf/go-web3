@@ -41,7 +41,7 @@ func NewBlockchain(l log.Logger, genesis *Block) (*Blockchain, error) {
 	bc := &Blockchain{
 		contractState:    NewState(),
 		headers:          []*Header{},
-		store:            NewMemorystore(),
+		store:            NewMemoryStore(),
 		logger:           l,
 		accountState:     accountState,
 		collectionState:  make(map[types.Hash]*CollectionTransaction),
